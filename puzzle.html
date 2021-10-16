@@ -19,7 +19,6 @@
 
     <!-- puzzle pieces container -->
     <div id="parts-left" style="z-index:-10; position:absolute; left:0px; width:15em; height:100%; display:block; overflow:hidden;"></div>
-    <div id="parts-right" style="z-index:-10; position:absolute; right:0px; width:15em; height:100%; display:block; overflow:hidden;"></div>
 
     <!-- main board -->
     <div id="main-board" style="position:absolute; z-index:-1000; background:#cacaca; border-radius:0.5em; background-size:contain;"></div>
@@ -53,7 +52,7 @@
         // show background
         if (settings.background)
         {
-          document.getElementById("main-board").style.backgroundImage = "linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), url(" + source.src + ")";
+          document.getElementById("main-board").style.backgroundImage = "linear-gradient(rgba(0,0,0,0.795), rgba(0,0,0,0.795)), url(" + source.src + ")";
         }
 
         // init and start game
@@ -67,7 +66,7 @@
           });
 
           // create puzzle engine
-          containers = [document.getElementById('parts-left'), document.getElementById('parts-right')]
+          containers = [document.getElementById('parts-left')]
           puzzle.initialize(document.getElementById('main-board'), parts, containers);
         }
 

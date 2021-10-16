@@ -157,6 +157,16 @@ class PuzzleGenerator
             }   
         }
 
+        // method to wait for image load as promise
+        var addImageProcess = function(src) {
+            return new Promise((resolve, reject) => {
+              let img = new Image()
+              img.onload = () => resolve(img)
+              img.onerror = reject
+              img.src = src
+            })
+        }
+
         // now generate actual parts
         let parts = [];
         for (let i = 0; i < settings.piecesCount.x; ++i)
@@ -170,9 +180,7 @@ class PuzzleGenerator
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
                 // set mask
-                let mask = new Image();
-                mask.src = connectionMasks[i][j].img;
-                await mask.decode(); // <-- trick to wait for image load
+                let mask = await addImageProcess(connectionMasks[i][j].img);
                 ctx.drawImage(mask, 0, 0);
 
                 // turn mask white pixels to transparent

@@ -96,7 +96,11 @@ class Puzzle
     _adjustPiecesSize()
     {
         // calculate desired width
-        let desiredWidth = Math.floor(window.innerWidth / (this._piecesCount.x + 2));
+        let desiredWidth = Math.floor(window.innerWidth / (this._piecesCount.x + this._partsContainers.length));
+        desiredWidth += Math.ceil(desiredWidth * (this._md.marginWidth / this._md.pieceWidth)) * 1.75;
+        if (desiredWidth > 600) {
+            desiredWidth = 600;
+        }
 
         // make sure not exceeding height
         let part = this._parts[0];
@@ -105,8 +109,8 @@ class Puzzle
             part.style.width = desiredWidth + 'px';
             part.style.height = 'auto';
             let height = part.offsetHeight;
-            height -= height * ((this._md.marginHeight / this._md.pieceHeight) * 2);
-            if (height * this._piecesCount.y < window.innerHeight - 10) {
+            height -= height * (this._md.marginHeight / this._md.pieceHeight) * 2;
+            if ((height * (this._piecesCount.y)) < window.innerHeight) {
                 break;
             }
             desiredWidth -= 10;
@@ -137,8 +141,9 @@ class Puzzle
 
         // adjust main div width
         let mainDivWidth = (desiredWidthWithoutMargin * this._piecesCount.x);
-        this._mainDiv.style.width = (desiredWidthWithoutMargin * this._piecesCount.x) + "px";
-        this._mainDiv.style.left = ((window.innerWidth - mainDivWidth) / 2) + "px";
+        this._mainDiv.style.width = mainDivWidth + "px";
+        this._mainDiv.style.left = (desiredWidth + (window.innerWidth - desiredWidth) / 2) + "px";
+        this._mainDiv.style.marginLeft = (-mainDivWidth / 2) + "px";
 
         // adjust main div height
         let marginHeight = Math.ceil(pieceHeight * (this._md.marginHeight / this._md.pieceHeight));
