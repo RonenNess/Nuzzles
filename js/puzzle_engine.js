@@ -130,12 +130,13 @@ class Puzzle
 
         // adjust inventory width and offset of parts in it
         let pieceHeight = this._parts[0].offsetHeight;
+        let marginHeight = Math.ceil(pieceHeight * (this._md.marginHeight / this._md.pieceHeight));
         for (let i = 0; i < this._partsContainers.length; ++i)
         {
             this._partsContainers[i].style.width = desiredWidth + 'px';
             var children = this._partsContainers[i].children;
             for (var j = 0; j < children.length; j++) {
-                children[j].style.top = (j * pieceHeight) + 'px';
+                children[j].style.top = (j * (pieceHeight - marginHeight) - marginHeight) + 'px';
             }
         }
 
@@ -146,7 +147,6 @@ class Puzzle
         this._mainDiv.style.marginLeft = (-mainDivWidth / 2) + "px";
 
         // adjust main div height
-        let marginHeight = Math.ceil(pieceHeight * (this._md.marginHeight / this._md.pieceHeight));
         let pieceHeightWithoutMargin = pieceHeight - (marginHeight * 2);
         let mainDivHeight = (pieceHeightWithoutMargin * this._piecesCount.y);
         this._mainDiv.style.height = mainDivHeight + "px";
