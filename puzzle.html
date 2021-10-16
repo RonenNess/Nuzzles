@@ -40,7 +40,7 @@
       let piecesCount = JSON.parse(localStorage.getItem("pieces_count"));
 
       // set snapping strength
-      puzzle.snappingStrength = (15 + settings.snapping * 10);
+      puzzle.snappingStrength = (settings.snapping * 10);
 
       // load test image
       let source = new Image();
