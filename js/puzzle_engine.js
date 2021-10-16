@@ -65,12 +65,12 @@ class Puzzle
         });
 
         // add general stop dragging logic
-        document.mouseup = () => {
+        document.ontouchend = document.mouseup = () => {
             this._stopDragging();
         }
 
         // register callback to track mouse position and implement dragging
-        document.onmousemove = (e) => {
+        document.ontouchmove = document.onmousemove = (e) => {
 
             // get mouse position
             this._mousePosition = {x: e.clientX, y: e.clientY};
@@ -209,7 +209,7 @@ class Puzzle
                 piece.style.filter = '';
 
                 // remove ability to drag this piece
-                piece.onmousedown = null;
+                piece.ontouchstart = piece.onmousedown = null;
 
                 // add effect
                 animateParticules(this._mousePosition.x, this._mousePosition.y);
@@ -294,10 +294,10 @@ class Puzzle
         }
 
         // add dragging logic
-        img.onmousedown = () => {
+        img.ontouchstart = img.onmousedown = () => {
             img._puzzle.engine._startDragging(img);
         };
-        img.onmouseup = () => {
+        img.ontouchend = img.onmouseup = () => {
             img._puzzle.engine._stopDragging();
         };
 

@@ -216,7 +216,7 @@ body:-moz-full-screen {
   border-radius: 4rem;
   border: 5px solid #ff22e9;
   cursor: pointer;
-  height: 350px;
+  height: 300px;
   object-fit: cover;
 }
 
