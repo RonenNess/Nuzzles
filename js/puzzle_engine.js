@@ -72,6 +72,8 @@ class Puzzle
         // register callback to track mouse position and implement dragging
         document.ontouchmove = document.onmousemove = (e) => {
 
+            if (e.touches && e.touches.length) { e = e.touches[0]; } // <-- handle mobile
+
             // get mouse position
             this._mousePosition = {x: e.clientX, y: e.clientY};
 
@@ -294,7 +296,9 @@ class Puzzle
         }
 
         // add dragging logic
-        img.ontouchstart = img.onmousedown = () => {
+        img.ontouchstart = img.onmousedown = (e) => {
+            if (e.touches && e.touches.length) { e = e.touches[0]; } // <-- handle mobile
+            this._mousePosition = {x: e.clientX, y: e.clientY};
             img._puzzle.engine._startDragging(img);
         };
         img.ontouchend = img.onmouseup = () => {
