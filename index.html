@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Nuzzles - Puzzles for Kids</title>
+    <meta name="description" content="Ads-free and safe Puzzles for kids! Upload your own photo or pick one of the built-in puzzles.">
+    <meta name="keywords" content="Puzzle, Kids, Children, Game">
+    <meta name="author" content="Ronen Ness">
+
+    <!-- bootstrap CSS -->
+    <link href="bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+
+  </head>
+
+  <body>
+
+    <div id="main">
+
+        <div id="balloon-container" style="position: fixed; z-index: -100;"></div>
+
+        <div class="container" style="padding-top:1.2rem;">
+
+            <!-- logo and options -->
+            <div class="row">
+
+                <div class="col-lg-12 col-md-12">
+                    <img src="assets/logo.png" style="max-width:100%; max-height:15rem;" class="center">
+                </div>
+
+                <div class="col-lg-12 col-md-12 text-center">
+                    <hr />
+                    <button onclick="$('#about-modal').modal('show')" type="button" class="btn btn-primary btn-huge btn-theme">About</button>
+                    <button onclick="$('#settings-modal').modal('show')" type="button" class="btn btn-primary btn-huge btn-theme">Options</button>
+                    <button onclick="document.documentElement.requestFullscreen()" type="button" class="btn btn-primary btn-huge btn-theme">Fullscreen</button>
+                </div>
+
+            </div>
+
+            <!-- layout selection -->
+            <br /><br />
+            <h1 class="theme-color">Puzzle Difficulty:</h1>
+
+            <div onclick="selectPiecesCount(4);" class="diff-select"><p>4</p></div>
+            <div onclick="selectPiecesCount(6);" class="diff-select"><p>6</p></div>
+            <div onclick="selectPiecesCount(8);" class="diff-select"><p>8</p></div>
+            <div onclick="selectPiecesCount(9);" class="diff-select"><p>9</p></div>
+            <div onclick="selectPiecesCount(10);" class="diff-select"><p>10</p></div>
+            <div onclick="selectPiecesCount(12);" class="diff-select"><p>12</p></div>
+            <div onclick="selectPiecesCount(14);" class="diff-select"><p>14</p></div>
+            <div onclick="selectPiecesCount(15);" class="diff-select"><p>15</p></div>
+            <div onclick="selectPiecesCount(16);" class="diff-select"><p>16</p></div>
+            <div onclick="selectPiecesCount(18);" class="diff-select"><p>18</p></div>
+            <div onclick="selectPiecesCount(24);" class="diff-select"><p>24</p></div>
+            <div onclick="selectPiecesCount(28);" class="diff-select"><p>28</p></div>
+            <div onclick="selectPiecesCount(32);" class="diff-select"><p>32</p></div>
+            <div onclick="selectPiecesCount(48);" class="diff-select"><p>48</p></div>
+            <div onclick="selectPiecesCount(64);" class="diff-select"><p>64</p></div>
+            <div onclick="selectPiecesCount(99);" class="diff-select"><p>99</p></div>
+
+            <!-- image selection -->
+            <br /><br />
+            <h1 class="theme-color">Select image to start:</h1>
+            <div id="images-container" class="row">
+
+                <!-- upload image button -->
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div style="padding:1.25rem">
+                        <img onclick="$('#upload-img-modal').modal('show')" class="preview-image" src="assets/upload-icon.png">
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- template for an image selection -->
+            <template id="image-selection-template">
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div style="padding:1.25rem">
+                        <img class="preview-image" src="">
+                    </div>
+                </div>
+            </template>
+
+        </div>
+
+        <!-- iframe for puzzle games -->
+        <iframe id="main-iframe" style="background:white; display:none; position:fixed; left:0px; right:0px; top:0px; bottom:0px; width:100%; height:100%; padding:0px; z-index: 1000;"></iframe>
+
+        <!-- options above the iframe -->
+        <div id="menu-button" style="position:fixed; z-index:100000; left:5px; top:5px; width: 100px; height:100px; display:none;">
+            <button onclick="$('#menu-modal').modal('show')" type="button" class="btn btn-primary btn-lg btn-theme">Menu</button>
+        </div>
+
+        <!-- main menu modal -->
+        <div id="menu-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="font-size:180%; text-align:center;">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content" style="background:none; border:none;">
+                <div class="modal-header" style="display: block;">
+                    <h1 class="modal-title theme-color">Main Menu</h1>
+                </div>
+                <div class="modal-body">
+                    <button type="button" class="btn btn-primary btn-huge btn-theme" data-dismiss="modal" onclick="$('#menu-modal').modal('hide')">Close Menu</button>
+                    <button type="button" style="margin-top:10px" class="btn btn-primary btn-huge btn-theme" data-dismiss="modal" onclick="closePuzzle();">Exit Puzzle</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- about modal -->
+        <div id="about-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="font-size:180%">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title theme-color">About</h1>
+                </div>
+                <div class="modal-body">
+                    <p>Nuzzles is a small love project I made for my little girl. <br />
+                    It's <a target="_blank" href="https://github.com/RonenNess/Nuzzles">open source</a>, totally free, and have no annoying ads. <br /><br />
+                    For questions feel free to contact me at <span class="theme-color">ronen.ness@gmail.com</span>.
+                </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-lg btn-theme" data-dismiss="modal" onclick="$('#about-modal').modal('hide')">Cool, thanks!</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- settings modal -->
+        <div id="settings-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="font-size:180%">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title theme-color">Options</h1>
+                </div>
+                
+                <div class="modal-body">
+                    
+                    <!-- show image background -->
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="setting-show-background-image" checked>
+                        <label class="form-check-label" style="cursor: pointer;" for="setting-show-background-image">
+                        Show Background Image
+                        </label>
+                    </div>
+
+                    <!-- snapping distance -->
+                    <hr />
+                    <label for="settings-snapping-strength" class="form-label">Snapping Strength</label>
+                    <input type="range" min="2" max="12" value="7" class="form-range" id="settings-snapping-strength">
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-lg btn-theme" data-dismiss="modal" onclick="saveSettings(); $('#settings-modal').modal('hide')">Save and Close</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- upload-img modal -->
+        <div id="upload-img-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="font-size:180%">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title theme-color">Upload Image</h1>
+                </div>
+                
+                <div class="modal-body">
+                    <p>Click below to upload an image to use as a puzzle.</p>
+                    <p style="font-size: 65%;">
+                        Don't worry about privacy, the image will be processed on your local device and will not be sent anywhere. To learn more, you can check out <a target="_blank" href="https://github.com/RonenNess/Nuzzles">the source code</a>.
+                    </p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-lg btn-theme-negative" data-dismiss="modal" onclick="$('#upload-img-modal').modal('hide')">Cancel</button>
+                    <button type="button" class="btn btn-primary btn-lg btn-theme" data-dismiss="modal" onclick="$('#upload-img-modal').modal('hide')">Start Puzzle!</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- main div -->
+    </div>
+
+    <!-- jquery and bootstrap -->
+    <script src="bootstrap/jquery.min.js"></script>
+    <script src="bootstrap/bootstrap.min.js"></script>
+
+    <!-- balloons animation -->
+    <script src="js/balloons.js"></script>
+
+    <!-- generate preview images -->
+    <script src="js/index.js"></script>
+    <script>
+
+        addImageSelection("lion.png", "Lion");
+        addImageSelection("monster.png", "Monster");
+        addImageSelection("unicorn.png", "Unicorn");
+        addImageSelection("snake.png", "Snake");
+        addImageSelection("dog.png", "Dog");
+        addImageSelection("kuala.png", "Kuala");
+        addImageSelection("bunny.png", "Bunny");
+        addImageSelection("hugger.png", "Hugger");
+        addImageSelection("pixie.png", "Pixie");
+        addImageSelection("bears.png", "Bears");
+        addImageSelection("kittens.png", "Kittens");
+
+        addImageSelection("puppy.png", "Puppy");
+        addImageSelection("panda.png", "Panda");
+        addImageSelection("panda2.png", "Panda");
+        addImageSelection("crab.png", "Crab");
+        addImageSelection("kitten.png", "Kitten");
+        addImageSelection("parrot.png", "Parrot");
+        addImageSelection("parrot2.png", "Parrot");
+        addImageSelection("red_panda.png", "Red Panda");
+
+        addImageSelection("balloons.png", "Balloons");
+        
+        
+    </script>
+
+  </body>
+
+</html>

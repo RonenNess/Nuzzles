@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Nuzzles - Puzzles for Kids</title>
+    <meta name="description" content="Ads-free and safe Puzzles for kids! Upload your own photo or pick one of the built-in puzzles.">
+    <meta name="keywords" content="Puzzle, Kids, Children, Game">
+    <meta name="author" content="Ronen Ness">
+    <link rel="stylesheet" href="css/main.css">
+  </head>
+
+  <body style="padding:0; margin:0; overflow:hidden;">
+    <script src="js/puzzle_generator.js"></script>
+    <script src="js/puzzle_engine.js"></script>
+
+    <script src="js/libs/anime.js"></script>
+
+    <!-- puzzle pieces container -->
+    <div id="parts-left" style="z-index:-10; position:absolute; left:0px; width:15em; height:100%; display:block; overflow:hidden;"></div>
+    <div id="parts-right" style="z-index:-10; position:absolute; right:0px; width:15em; height:100%; display:block; overflow:hidden;"></div>
+
+    <!-- main board -->
+    <div id="main-board" style="position:absolute; z-index:-1000; background:#cacaca; border-radius:0.5em; background-size:contain;"></div>
+    
+    <script>
+
+      // create puzzles generator
+      let puzzlesGenerator = new PuzzleGenerator();
+      let puzzle = new Puzzle();
+
+      // get selected puzzle
+      let puzzleUrl = localStorage.getItem("selected_puzzle");
+
+      // get settings
+      let settings = JSON.parse(localStorage.getItem("settings"));
+
+      // get pieces count
+      let piecesCount = JSON.parse(localStorage.getItem("pieces_count"));
+
+      // set snapping strength
+      puzzle.snappingStrength = (15 + settings.snapping * 10);
+
+      // load test image
+      let source = new Image();
+      source.src = puzzleUrl || "assets/images/test.png";
+
+      // when image ready, generate puzzle
+      source.onload = () =>
+      {
+        
+        // show background
+        if (settings.background)
+        {
+          document.getElementById("main-board").style.backgroundImage = "linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), url(" + source.src + ")";
+        }
+
+        // init and start game
+        async function generateAndShowPuzzle()
+        {
+
+          // generate parts
+          let parts = await puzzlesGenerator.create({
+            source: source,
+            piecesCount: piecesCount
+          });
+
+          // create puzzle engine
+          containers = [document.getElementById('parts-left'), document.getElementById('parts-right')]
+          puzzle.initialize(document.getElementById('main-board'), parts, containers);
+        }
+
+        generateAndShowPuzzle();
+
+      };
+
+    </script>
+
+    <!-- canvas and code for special effects-->
+    <canvas id="effects-canvas" style="pointer-events: none; background: none !important; position: absolute; z-index: -1;"></canvas>
+    <script src="js/match_effect.js"></script>
+    <script src="js/libs/confetti.js"></script>
+
+  </body>
+</html>
