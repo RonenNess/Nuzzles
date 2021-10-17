@@ -329,6 +329,11 @@ class Puzzle
                     document.body.style.background = '#ED5564';
                     this._mainDiv.style.top = (window.innerHeight / 2) + "px";
                     this._mainDiv.style.left = (window.innerWidth / 2) + "px";
+                    new Audio('assets/yay.ogg').play();
+                }
+                // not done yet, but piece was put in place
+                else {
+                    new Audio('assets/ding.ogg').play();
                 }
             }
             // not in place, go back to inventory
