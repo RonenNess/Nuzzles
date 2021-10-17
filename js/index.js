@@ -127,6 +127,56 @@ function saveSettings()
 }
 
 
+// implement upload file logic
+document.getElementById('upload-image-file').onchange = function (evt) {
+    var tgt = evt.target || window.event.srcElement,
+        files = tgt.files;
+
+    // FileReader support
+    if (FileReader && files && files.length) {
+        var fr = new FileReader();
+        fr.onload = function () {
+
+            // get image data
+            let img = new Image();
+            img.src = fr.result;
+            img.onload = () => {
+
+                // image is loaded, check if need cropping
+                let ratio = (img.width / img.height);
+                if (ratio > 1.1 || ratio < 0.9) 
+                {
+                    let size = Math.min(img.width, img.height);
+                    const cropper = document.createElement("canvas");
+                    cropper.width = size;
+                    cropper.height = size;
+                    const ctx = cropper.getContext("2d");
+                    ctx.drawImage(img, size / 2 - img.width / 2, size / 2 - img.height / 2, img.width, img.height);
+                    let croppedImg = new Image();
+                    croppedImg.src = cropper.toDataURL();
+                    croppedImg.onload = () => {
+                        $('#upload-img-modal').modal('hide')
+                        selectPuzzleImage(croppedImg);
+                    }
+                }
+                // no cropping needed
+                else 
+                {
+                    $('#upload-img-modal').modal('hide')
+                    selectPuzzleImage(img);
+                }
+            }
+        }
+        fr.readAsDataURL(files[0]);
+    }
+
+    // Not supported
+    else {
+        alert("Reading image data not supported on your browser!");
+    }
+}
+
+
 // load settings from local storage
 let settings = localStorage.getItem("settings");
 if (settings) {

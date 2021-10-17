@@ -164,14 +164,15 @@
                 
                 <div class="modal-body">
                     <p>Click below to upload an image to use as a puzzle.</p>
-                    <p style="font-size: 65%;">
+
+                    <input type="file" name="upload-image-file" id="upload-image-file" size="24" alt=""/>
+                    <p style="font-size: 65%; margin-top:1rem;">
                         Don't worry about privacy, the image will be processed on your local device and will not be sent anywhere. To learn more, you can check out <a target="_blank" href="https://github.com/RonenNess/Nuzzles">the source code</a>.
                     </p>
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary btn-lg btn-theme-negative" data-dismiss="modal" onclick="$('#upload-img-modal').modal('hide')">Cancel</button>
-                    <button type="button" class="btn btn-primary btn-lg btn-theme" data-dismiss="modal" onclick="$('#upload-img-modal').modal('hide')">Start Puzzle!</button>
                 </div>
                 </div>
             </div>
