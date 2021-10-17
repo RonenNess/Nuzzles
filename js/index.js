@@ -155,7 +155,7 @@ document.getElementById('upload-image-file').onchange = function (evt) {
                     let croppedImg = new Image();
                     croppedImg.src = cropper.toDataURL();
                     croppedImg.onload = () => {
-                        $('#upload-img-modal').modal('hide')
+                        $('#upload-img-modal').modal('hide');
                         selectPuzzleImage(croppedImg);
                     }
                 }
