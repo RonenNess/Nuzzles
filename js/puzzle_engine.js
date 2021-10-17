@@ -87,7 +87,9 @@ class Puzzle
         window.onresize = () => {
             this._arrangeBoardAndAdjustSizes();
         }
-        this._arrangeBoardAndAdjustSizes();
+        setTimeout(() => {
+            this._arrangeBoardAndAdjustSizes();
+        }, 50);
     }
 
     /**
