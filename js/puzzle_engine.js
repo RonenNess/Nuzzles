@@ -85,90 +85,183 @@ class Puzzle
 
         // handle resize
         window.onresize = () => {
-            this._adjustPiecesSize();
+            this._arrangeBoardAndAdjustSizes();
         }
-        this._adjustPiecesSize();
+        this._arrangeBoardAndAdjustSizes();
+    }
+
+    /**
+     * Calculate optimal piece size to fit screen.
+     */
+    _getOptimalPieceSize()
+    {
+        // are we in horizontal mode?
+        let isHorizontal = window.innerWidth > window.innerHeight;
+
+        // calculate horizontal mode
+        if (isHorizontal)
+        {
+            // get estimated width
+            let desiredWidth = Math.floor(window.innerWidth / (this._piecesCount.x + this._partsContainers.length));
+            desiredWidth += Math.ceil(desiredWidth * (this._md.marginWidth / this._md.pieceWidth)) * 1.75;
+            if (desiredWidth > 600) {
+                desiredWidth = 600;
+            }
+
+            // make sure not exceeding height
+            let part = this._parts[0];
+            for (let i = 0; i < 1000; ++i)
+            {
+                part.style.width = desiredWidth + 'px';
+                part.style.height = 'auto';
+                let height = part.offsetHeight;
+                height -= height * (this._md.marginHeight / this._md.pieceHeight) * 2;
+                if ((height * (this._piecesCount.y)) < window.innerHeight) {
+                    break;
+                }
+                desiredWidth -= 10;
+            }
+
+            // return size
+            return [desiredWidth + 'px', 'auto'];
+        }
+        // calculate vertical mode
+        else
+        {
+            // get estimated height
+            let desiredHeight = Math.floor(window.innerHeight / (this._piecesCount.y + this._partsContainers.length));
+            desiredHeight += Math.ceil(desiredHeight * (this._md.marginHeight / this._md.pieceHeight)) * 1.75;
+            if (desiredHeight > 600) {
+                desiredHeight = 600;
+            }
+            
+            // make sure not exceeding width
+            let part = this._parts[0];
+            for (let i = 0; i < 1000; ++i)
+            {
+                part.style.height = desiredHeight + 'px';
+                part.style.width = 'auto';
+                let width = part.offsetWidth;
+                width -= width * (this._md.marginWidth / this._md.pieceWidth) * 2;
+                if ((width * (this._piecesCount.x)) < window.innerWidth) {
+                    break;
+                }
+                desiredHeight -= 10;
+            }
+            
+            // return size
+            return ['auto', desiredHeight + 'px'];
+        }
     }
 
     /**
      * Adjust all pieces size.
      */
-    _adjustPiecesSize()
+    _arrangeBoardAndAdjustSizes()
     {
-        // calculate desired width
-        let desiredWidth = Math.floor(window.innerWidth / (this._piecesCount.x + this._partsContainers.length));
-        desiredWidth += Math.ceil(desiredWidth * (this._md.marginWidth / this._md.pieceWidth)) * 1.75;
-        if (desiredWidth > 600) {
-            desiredWidth = 600;
-        }
+        // get pieces size
+        let piecesSize = this._getOptimalPieceSize();
 
-        // make sure not exceeding height
-        let part = this._parts[0];
-        while (true)
-        {
-            part.style.width = desiredWidth + 'px';
-            part.style.height = 'auto';
-            let height = part.offsetHeight;
-            height -= height * (this._md.marginHeight / this._md.pieceHeight) * 2;
-            if ((height * (this._piecesCount.y)) < window.innerHeight) {
-                break;
-            }
-            desiredWidth -= 10;
-        }
+        // are we in horizontal mode?
+        let isHorizontal = window.innerWidth > window.innerHeight;
 
-        // calc desired width without margins
-        let marginWidth = Math.ceil(desiredWidth * (this._md.marginWidth / this._md.pieceWidth));
-        let desiredWidthWithoutMargin = desiredWidth - (marginWidth * 2);
-
-        // set parts size
+        // set parts size and position
         for (let i = 0; i < this._parts.length; ++i)
         {
-            this._parts[i].style.width = desiredWidth + 'px';
-            this._parts[i].style.height = 'auto';
-            this._parts[i].style.position = 'fixed';
+            let part = this._parts[i];
+            part.style.width = piecesSize[0];
+            part.style.height = piecesSize[1];
+            part.style.position = part._puzzle.isInPlace ? 'absolute' : 'fixed';
         }
 
-        // adjust inventory width and offset of parts in it
+        // calc width without margins
+        let pieceWidth = this._parts[0].offsetWidth;
+        let marginWidth = Math.ceil(pieceWidth * (this._md.marginWidth / this._md.pieceWidth));
+        let pieceWidthWithoutMargin = pieceWidth - (marginWidth * 2);
+
+        // calc height without margins
         let pieceHeight = this._parts[0].offsetHeight;
         let marginHeight = Math.ceil(pieceHeight * (this._md.marginHeight / this._md.pieceHeight));
+        let pieceHeightWithoutMargin = pieceHeight - (marginHeight * 2);
+
+        // adjust inventory width and offset of parts in it
         for (let i = 0; i < this._partsContainers.length; ++i)
         {
-            this._partsContainers[i].style.width = desiredWidth + 'px';
-            var children = this._partsContainers[i].children;
-            for (var j = 0; j < children.length; j++) {
-                children[j].style.top = (j * (pieceHeight - marginHeight) - marginHeight) + 'px';
+            let container = this._partsContainers[i];
+            if (isHorizontal) {
+                container.style.width = pieceWidth + 'px';
+                container.style.height = '100%';
+                container.style.top = '0px';
+                container.style.left = '0px';
+                container.style.bottom = '';
+                var children = container.children;
+                for (var j = 0; j < children.length; j++) {
+                    children[j].style.top = (j * (pieceHeight - marginHeight)) + 'px';
+                }
+            }
+            else {
+                container.style.width = '100%';
+                container.style.height = pieceWidth + 'px';
+                container.style.bottom = '0px';
+                container.style.left = '0px';
+                container.style.top = '';
+                var children = container.children;
+                for (var j = 0; j < children.length; j++) {
+                    children[j].style.left = (j * (pieceWidth - marginWidth)) + 'px';
+                }
             }
         }
 
         // adjust main div width
-        let mainDivWidth = (desiredWidthWithoutMargin * this._piecesCount.x);
+        let mainDivWidth = (pieceWidthWithoutMargin * this._piecesCount.x);
         this._mainDiv.style.width = mainDivWidth + "px";
-        this._mainDiv.style.left = (desiredWidth + (window.innerWidth - desiredWidth) / 2) + "px";
-        this._mainDiv.style.marginLeft = (-mainDivWidth / 2) + "px";
 
         // adjust main div height
-        let pieceHeightWithoutMargin = pieceHeight - (marginHeight * 2);
         let mainDivHeight = (pieceHeightWithoutMargin * this._piecesCount.y);
         this._mainDiv.style.height = mainDivHeight + "px";
-        this._mainDiv.style.top = ((window.innerHeight - mainDivHeight) / 2) + "px";
+
+        // adjust main div position
+        if (this._finished) {
+            this._mainDiv.style.top = (window.innerHeight / 2) + "px";
+            this._mainDiv.style.left = (window.innerWidth / 2) + "px";
+        }
+        else if (isHorizontal) {
+            this._mainDiv.style.left = (pieceWidth + (window.innerWidth - pieceWidth) / 2) + "px";
+            this._mainDiv.style.top = (window.innerHeight / 2) + "px";
+        }
+        else
+        {
+            this._mainDiv.style.top = marginHeight + ((window.innerHeight - pieceHeight) / 2) + "px";
+            this._mainDiv.style.left = (window.innerWidth / 2) + "px";
+        }
+
+        // to center main div
+        this._mainDiv.style.marginLeft = (-mainDivWidth / 2) + "px";
+        this._mainDiv.style.marginTop = (-mainDivHeight / 2) + "px";
 
         // set parts target offset
-        let mainDivRect = this._mainDiv.getBoundingClientRect();
         for (let i = 0; i < this._parts.length; ++i)
         {
             let part = this._parts[i];
             let index = part._puzzle.index;
-            part._puzzle.targetPosition = {x: index.x * desiredWidthWithoutMargin, y: index.y * pieceHeightWithoutMargin};
+            part._puzzle.targetPosition = {x: index.x * pieceWidthWithoutMargin, y: index.y * pieceHeightWithoutMargin};
             part._puzzle.margins = {x: marginWidth, y: marginHeight};
+
+            // pieces in place
             if (part._puzzle.isInPlace)
             {
-                part.style.left = Math.floor(mainDivRect.left + part._puzzle.targetPosition.x - part._puzzle.margins.x) + 'px';
-                part.style.top = Math.floor(mainDivRect.top + part._puzzle.targetPosition.y - part._puzzle.margins.y) + 'px';
+                part.style.left = Math.floor(part._puzzle.targetPosition.x - part._puzzle.margins.x) + 'px';
+                part.style.top = Math.floor(part._puzzle.targetPosition.y - part._puzzle.margins.y) + 'px';
             }
+            // pieces in inventory
             else
             {
-                // required so movement animation would work on x axis
-                part.style.left = part.parentNode.getBoundingClientRect().left + 'px';
+                if (isHorizontal) {
+                    part.style.left = part.parentNode.getBoundingClientRect().left + 'px';
+                }
+                else {
+                    part.style.top = (part.parentNode.getBoundingClientRect().top + marginHeight) + 'px';
+                }
             }
         }
     }
@@ -209,6 +302,7 @@ class Puzzle
                 piece._puzzle.isInPlace = true;
 
                 // add to main div
+                piece.style.position = 'absolute';
                 piece.parentNode.removeChild(piece);
                 this._mainDiv.appendChild(piece);
 
@@ -229,9 +323,12 @@ class Puzzle
 
                 // complete puzzle!
                 if (allDone) {
+                    this._finished = true;
                     startConfetti();
                     document.body.style.animation = 'random-colors 5s infinite';
                     document.body.style.background = '#ED5564';
+                    this._mainDiv.style.top = (window.innerHeight / 2) + "px";
+                    this._mainDiv.style.left = (window.innerWidth / 2) + "px";
                 }
             }
             // not in place, go back to inventory
@@ -243,7 +340,7 @@ class Puzzle
                 piece.style.zIndex = 50;
             }
             this._draggedPiece = null;
-            this._adjustPiecesSize();
+            this._arrangeBoardAndAdjustSizes();
         }
     }
 

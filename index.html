@@ -39,8 +39,6 @@
 
             </div>
 
-            <h3 class="best-in-landscape-message theme-color" style="padding-top:1rem; text-align:center;">!!! Game looks best when holding phone horizontally !!!</h3>
-
             <!-- layout selection -->
             <br />
             <h1 class="theme-color">Pieces count:</h1>
@@ -92,12 +90,13 @@
         <div id="menu-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="font-size:180%; text-align:center;">
             <div class="modal-dialog" role="document">
                 <div class="modal-content" style="background:none; border:none;">
-                <div class="modal-header" style="display: block;">
+                <div class="modal-header" style="display: block; padding-bottom: 0px;">
                     <h1 class="modal-title theme-color theme-outline">Main Menu</h1>
                 </div>
                 <div class="modal-body">
                     <button type="button" class="btn btn-primary btn-huge btn-theme" data-dismiss="modal" onclick="$('#menu-modal').modal('hide')">Close Menu</button><br />
-                    <button type="button" style="margin-top:10px" class="btn btn-primary btn-huge btn-theme" data-dismiss="modal" onclick="closePuzzle();">Exit Puzzle</button>
+                    <button style="margin-top:5px" onclick="document.documentElement.requestFullscreen()" type="button" class="btn btn-primary btn-huge btn-theme">Fullscreen</button><br />
+                    <button type="button" style="margin-top:5px; color:#f8ff01ff" class="btn btn-primary btn-huge btn-theme" data-dismiss="modal" onclick="closePuzzle();">Exit Puzzle</button>
                 </div>
                 </div>
             </div>

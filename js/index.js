@@ -31,7 +31,10 @@ function closePuzzle()
 
 // show / hide scrollbar based on puzzle visibility
 setInterval(() => {
-    document.body.style.overflowY = document.getElementById('main-iframe').style.display == 'none' ? 'scroll' : 'hidden';
+    let puzzleVisible = document.getElementById('main-iframe').style.display != 'none';
+    document.body.style.overflowY = puzzleVisible ? 'hidden' : 'scroll';
+    document.body.style.height = puzzleVisible ? '0px' : 'auto';
+    document.body.style.display = 'block';
 }, 50);
 
 
@@ -108,7 +111,7 @@ function selectPuzzleImage(img)
     localStorage.setItem("selected_puzzle", img.src);
 
     // load puzzle in iframe
-    $("#main-iframe").show()[0].src = "puzzle.html";
+    $("#main-iframe").show()[0].src = "puzzle.html?_cache=1";
     $("#menu-button").show();
 }
 
