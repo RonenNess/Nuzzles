@@ -144,14 +144,16 @@ document.getElementById('upload-image-file').onchange = function (evt) {
 
                 // image is loaded, check if need cropping
                 let ratio = (img.width / img.height);
-                if (ratio > 1.1 || ratio < 0.9) 
+                let maxSize = 1100;
+                if (ratio > 1.1 || ratio < 0.9 || img.width > maxSize || img.height > maxSize) 
                 {
-                    let size = Math.min(img.width, img.height);
+                    let croppedSourceSize = Math.min(img.width, img.height);
+                    let size = Math.min(croppedSourceSize, maxSize);
                     const cropper = document.createElement("canvas");
                     cropper.width = size;
                     cropper.height = size;
                     const ctx = cropper.getContext("2d");
-                    ctx.drawImage(img, size / 2 - img.width / 2, size / 2 - img.height / 2, img.width, img.height);
+                    ctx.drawImage(img, img.width / 2 - croppedSourceSize / 2, img.height / 2 - croppedSourceSize / 2, croppedSourceSize, croppedSourceSize, 0, 0, size, size);
                     let croppedImg = new Image();
                     croppedImg.src = cropper.toDataURL();
                     croppedImg.onload = () => {
