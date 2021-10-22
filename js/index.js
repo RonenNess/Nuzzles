@@ -4,6 +4,14 @@
  * Since: 2021.
  */
 
+
+// on safari say not supported
+var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+if (isSafari) {
+    alert("Sorry, this game don't work on Safari at the moment :(");
+}
+
+
 // generate image selection button
 function addImageSelection(imageFile)
 {
